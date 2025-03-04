@@ -1,10 +1,11 @@
 #include "App.hpp"
-#include <iostream>
+#include "imgui_impl_sdl3.h"
+#include "imgui_impl_sdlrenderer3.h"
 
 App::App()
 {
-  // init SDL2 systems
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
+  // init SDL3 systems
+  if (!SDL_Init(SDL_INIT_VIDEO)) {
     printf("Error: %s\n", SDL_GetError());
   }
 
@@ -14,14 +15,14 @@ App::App()
 #endif
 
   // create window
-  SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-  m_window = SDL_CreateWindow("Palettable", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+  SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+  m_window = SDL_CreateWindow("Palettable", 1280, 720, window_flags);
   if (m_window == nullptr) {
     printf("Error: SDL_CreateWindow0(): %s\n", SDL_GetError());
   }
 
   // create render backend
-  m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+  m_renderer = SDL_CreateRenderer(m_window, NULL);
   if (m_renderer == nullptr) {
     SDL_Log("Error creating SDL_Renderer!");
   }
@@ -32,8 +33,8 @@ App::App()
   ImGui::SetCurrentContext(context);
 
   // link imgui to sdl2
-  ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer);
-  ImGui_ImplSDLRenderer2_Init(m_renderer);
+  ImGui_ImplSDL3_InitForSDLRenderer(m_window, m_renderer);
+  ImGui_ImplSDLRenderer3_Init(m_renderer);
 
   // setup io
   m_io = ImGui::GetIO(); (void)m_io;
@@ -50,17 +51,17 @@ int App::run() {
   SDL_Event event;
   while (m_running) {
     while (SDL_PollEvent(&event)) {
-      ImGui_ImplSDL2_ProcessEvent(&event);
+      ImGui_ImplSDL3_ProcessEvent(&event);
       switch(event.type) {
-        case SDL_QUIT:
+        case SDL_EVENT_QUIT:
           m_running = false;
           break;
       }
     }
 
     // start dear imgui frame
-    ImGui_ImplSDLRenderer2_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
+    ImGui_ImplSDLRenderer3_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
 
     // show app window
@@ -70,10 +71,10 @@ int App::run() {
 
     // Rendering
     ImGui::Render();
-    SDL_RenderSetScale(m_renderer, m_io.DisplayFramebufferScale.x, m_io.DisplayFramebufferScale.y);
+    SDL_SetRenderScale(m_renderer, m_io.DisplayFramebufferScale.x, m_io.DisplayFramebufferScale.y);
     SDL_SetRenderDrawColor(m_renderer, m_clear_color.r, m_clear_color.g, m_clear_color.b, m_clear_color.a);
     SDL_RenderClear(m_renderer);
-    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_renderer);
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_renderer);
     SDL_RenderPresent(m_renderer);
   }
   return 0;
@@ -81,8 +82,8 @@ int App::run() {
 
 App::~App() {
   // cleanup
-  ImGui_ImplSDLRenderer2_Shutdown();
-  ImGui_ImplSDL2_Shutdown();
+  ImGui_ImplSDLRenderer3_Shutdown();
+  ImGui_ImplSDL3_Shutdown();
   ImGui::DestroyContext();
 
   SDL_DestroyRenderer(m_renderer);

@@ -1,9 +1,6 @@
 #pragma once
 #include "imgui.h"
-
 #include <string>
-#include <stdlib.h>
-#include <time.h>
 
 struct Color
 {

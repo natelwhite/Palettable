@@ -1,5 +1,4 @@
 #include "Color.hpp"
-#include <iostream>
 
 Color::Color() {
   int r = rand() % 101;
