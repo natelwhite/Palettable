@@ -25,8 +25,8 @@
 - Fedora 39+ can also add `liburing-devel` to that command line.
 - For any other build issues potentially related to linux, see: https://wiki.libsdl.org/SDL3/README/linux.
 ### Build
-- First, clone the repo
-	- `git clone https://natelwhite/Palettable.git`
+- First, clone the repo and it's submodules
+	- `git clone --recurse-submodules https://natelwhite/Palettable.git`
 - Then, while in `./Palettable/`:
 	- Generate build system: `cmake -B build`
 		- Optionally use cmake: `cmake -B build -G Ninja`
