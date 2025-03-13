@@ -1,4 +1,5 @@
 #include "Palette.hpp"
+#include <ctime>
 
 Palette::Palette(const int &t_rows, const int &t_cols)
   : m_rows(t_rows), m_cols(t_cols) {

@@ -40,7 +40,6 @@ App::App()
   m_io = ImGui::GetIO(); (void)m_io;
   m_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   m_io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-  m_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
   // setup dear imgui style
   ImGui::StyleColorsDark();
@@ -96,7 +95,6 @@ void App::show() {
   ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(viewport->Pos);
   ImGui::SetNextWindowSize(viewport->Size);
-  ImGui::SetNextWindowViewport(viewport->ID);
   
   if (ImGui::Begin("Palettable", &m_running, m_app_window_flags)) {
     // calculate window positions and sizes
